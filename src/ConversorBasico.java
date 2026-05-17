@@ -11,8 +11,7 @@ public class ConversorBasico {
         }
 
         String caracteres = "0123456789ABCDEF";
-
-        String resultado = "";
+        String resultado = " ";
 
         // Método de divisiones sucesivas
         while (numero > 0) {
@@ -59,7 +58,7 @@ public class ConversorBasico {
 
         numero = numero.toUpperCase();
 
-        String permitidos = "";
+        String permitidos = " ";
 
         switch (base) {
 
