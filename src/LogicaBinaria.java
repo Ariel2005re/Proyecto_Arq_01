@@ -14,6 +14,7 @@ public class LogicaBinaria {
             while(binario.length()<bits){ //completa los 0
                 binario ="0" + binario;
             }
+            System.out.println("Binario: " + binario);
             return binario;
         }
         //negativo
@@ -37,7 +38,7 @@ public class LogicaBinaria {
             //C2
             String c2="";
             int carry=1; //acarreo
-            for(int i=bits -1;i>=0;i--){
+            for(int i=c1.length()-1;i>=0;i--){
                 int bit =c1.charAt(i)-'0';
                 int suma=bit+carry;
                 c2=(suma % 2)+c2;
@@ -78,19 +79,20 @@ public class LogicaBinaria {
 
     }
     private static String restarUno(String binario){
-        char [] bits =binario.toCharArray();
-        //recorremos desde la derecha
-        for(int i=bits.length-1;i>=0;i++){
-            if(bits[i]=='1'){
-                bits[i]='0';
-                break;
-            }
-            else{
-                bits[i]='1';
-            }
+    StringBuilder sb = new StringBuilder(binario);
+
+    for (int i = sb.length() - 1; i >= 0; i--) {
+
+        if (sb.charAt(i) == '1') {
+            sb.setCharAt(i, '0');
+            return sb.toString();
+        } else {
+            sb.setCharAt(i, '1');
         }
-        return new String(bits);
     }
+
+    return sb.toString();
+}
     //Fase 4
     public static String SumaBinario(String a,String b,int bits){
         String resultado="";
@@ -116,14 +118,37 @@ public class LogicaBinaria {
 
         return resultado;
     }
-    public static String restaBinario(int a, int b, int bits){
-
-        String binA = DecimalAC2(a, bits);
-
-        String binB = DecimalAC2(b, bits);
-
-        String resultado = SumaBinario(binA, binB, bits);
-
-        return resultado;
+public static String restaBinario(int a, int b, int bits) {
+    String binA = DecimalAC2(a, bits);
+    if (binA.equals("Error de Overflow")) {
+        System.out.println("Overflow en A");
+        return "OVERFLOW";
     }
+
+    String negB = DecimalAC2(-b, bits);
+    if (negB.equals("Error de Overflow")) {
+        System.out.println("Overflow en -B: " + (-b) + " no cabe en " + bits + " bits.");
+        return "OVERFLOW";
+    }
+
+    System.out.println("\nSumando A + (-B) en Ca2:");
+    String resultado = SumaBinario(binA, negB, bits);
+
+    // si carry salió del rango, los signos de entrada y salida dan una pista. 
+    //Regla: overflow si ambos operandos tienen el mismo bit de signo y el resultado tiene signo diferente.
+    boolean signoA   = binA.charAt(0) == '1';
+    boolean signoNegB = negB.charAt(0) == '1';
+    boolean signoRes  = resultado.charAt(0) == '1';
+
+    if (signoA == signoNegB && signoRes != signoA) {
+        System.out.println("¡OVERFLOW detectado en la suma!");
+        return "OVERFLOW";
+    }
+
+    //resultado de vuelta a decimal para mostrarlo
+    int decimalResultado = c2aDecimal(resultado);
+    System.out.println("Resultado decimal de la resta: " + decimalResultado);
+
+    return resultado;
+}
 }
